@@ -20,7 +20,6 @@
   let channelId = '';
   let query = '';
   let apiKey = '';
-  let order = '';
   
   const maxResults = 1;
 
@@ -34,6 +33,7 @@
       params: {
         part: 'snippet',
         channelId: channelId,
+        order: date,
         maxResults: maxResults,
         q: query,
       }
@@ -74,7 +74,7 @@
     updateVideo()
 
     //then update it every 12 hours
-    let t = 12 * 60 * 60 * 1000; //in milliseconds
+    let t = 2 * 60 * 60 * 1000; //in milliseconds
     setInterval(updateVideo, t);
   })
 
