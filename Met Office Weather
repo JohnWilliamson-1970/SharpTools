@@ -20,6 +20,7 @@
   let channelId = '';
   let query = '';
   let apiKey = '';
+  let order = '';
   
   const maxResults = 1;
 
@@ -84,4 +85,3 @@
   html, body { margin: 0; height: 100vh; }
   iframe { height: 100%; width: 100%; border: 0; }
 </style>
-  
