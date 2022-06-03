@@ -5,7 +5,7 @@
   "settings": [
     {"name": "apiKey", "label": "API Key", "type": "STRING"},
     {"name": "channelId", "label": "YouTube Channel ID", "type": "STRING"},
-    {"name": "query", "label": "Query", "type": "STRING"}
+    {"name": "query", "label": "Query", "type": "STRING"},
     {"name": "order", "label": :"Order", "type": "STRING"}
   ],
   "name": "Dynamic YouTube Search"
