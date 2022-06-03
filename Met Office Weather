@@ -1,0 +1,87 @@
+<!-- Do not edit below -->
+<script type="application/json" id="tile-settings">
+{
+  "schema": "0.1.0",
+  "settings": [
+    {"name": "apiKey", "label": "API Key", "type": "STRING"},
+    {"name": "channelId", "label": "YouTube Channel ID", "type": "STRING"},
+    {"name": "query", "label": "Query", "type": "STRING"}
+    {"name": "order", "label": :"Order", "type": "STRING"}
+  ],
+  "name": "Dynamic YouTube Search"
+}
+</script>
+<!-- Do not edit above -->
+<iframe id="mainVideoFrame" allow="autoplay" frameborder="0" allowfullscreen=""></iframe>
+<script src="https://unpkg.com/axios@0.27.2/dist/axios.min.js"></script>
+<script src="https://cdn.sharptools.io/js/custom-tiles.js"></script>
+<script>
+  //get these from settings now
+  let channelId = '';
+  let query = '';
+  let apiKey = '';
+  let order = '';
+  
+  const maxResults = 1;
+
+  const API_BASE = 'https://youtube.googleapis.com/youtube/v3/search';
+
+  const iframe = document.getElementById("mainVideoFrame");
+
+  async function getLatestVideoId(){
+    console.log('Running getLatestVideoId()')
+    let queryOptions = {
+      params: {
+        part: 'snippet',
+        channelId: channelId,
+        maxResults: maxResults,
+        q: query,
+      }
+    }
+
+    //if we have an API_KEY set, use that
+    if(apiKey != ''){
+      queryOptions.params.key = apiKey
+    }
+    //otherwise there's an error since no authorization is set
+    else{
+      stio.showToast('API Key is not set.', 'red');
+      return;
+    }
+    
+    let response = await axios.get(API_BASE, queryOptions)
+    //if we got a valid response
+    if(response.data && Array.isArray(response.data.items)){
+      let item = response.data.items[0]; //since we filtered to max of 1, grab the first item
+      return item.id.videoId; //and return the videoId for usage
+    }
+  }
+
+  async function updateVideo(){
+    let videoId = await getLatestVideoId();
+    let url = `https://www.youtube.com/embed/${videoId}?autoplay=1&modestbranding=1`
+    iframe.src = url;
+    console.log('Using YouTube URL: ', url)
+  }
+
+  stio.ready(data => {
+    //get the settings
+    if(data.settings.apiKey) apiKey = data.settings.apiKey;
+    if(data.settings.query) query = data.settings.query;
+    if(data.settings.channelId) channelId = data.settings.channelId;
+    
+    //kick it off once when we first load
+    updateVideo()
+
+    //then update it every 12 hours
+    let t = 12 * 60 * 60 * 1000; //in milliseconds
+    setInterval(updateVideo, t);
+  })
+
+  
+</script>
+<style>
+  html, body { margin: 0; height: 100vh; }
+  iframe { height: 100%; width: 100%; border: 0; }
+</style>
+  
